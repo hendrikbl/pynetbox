@@ -211,28 +211,12 @@ class Racks(Record):
 
 class Termination(Record):
     def __str__(self):
-        # hacky check to see if we're a circuit termination to
-        # avoid another call to NetBox because of a non-existent attr
-        # in self.name
-        if "circuit" in str(self.url):
-            return self.circuit.cid
-
-        return self.name
-
-    device = Devices
-    circuit = Circuits
+        return f"{self.object_type} #{self.object_id}"
 
 
 class Cables(Record):
     def __str__(self):
-        if all(
-            [
-                isinstance(i, Termination)
-                for i in (self.termination_a, self.termination_b)
-            ]
-        ):
-            return "{} <> {}".format(self.termination_a, self.termination_b)
         return "Cable #{}".format(self.id)
 
-    termination_a = Termination
-    termination_b = Termination
+    a_terminations = [Termination]
+    b_terminations = [Termination]
